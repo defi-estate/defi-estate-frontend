@@ -19,12 +19,16 @@ export default function HomePage() {
         <h1 className="mx-auto max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl">
           {t('title')}
         </h1>
-        <p className="text-muted mx-auto max-w-2xl text-lg">{t('subtitle')}</p>
-        <div className="flex justify-center gap-3">
+        <p className="text-muted-foreground mx-auto max-w-2xl text-lg">{t('subtitle')}</p>
+        <div className="flex flex-wrap justify-center gap-3">
           <Link href="/properties">
             <Button>{t('browseProperties')}</Button>
           </Link>
-          <a href="https://developers.stellar.org/docs/build/smart-contracts/overview">
+          <a
+            href="https://developers.stellar.org/docs/build/smart-contracts/overview"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
             <Button variant="secondary">{t('howItWorks')}</Button>
           </a>
         </div>
@@ -35,7 +39,7 @@ export default function HomePage() {
           <Card key={key} className="space-y-3">
             <Icon className="text-primary h-6 w-6" aria-hidden />
             <h2 className="font-medium">{t(`features.${key}.title`)}</h2>
-            <p className="text-muted text-sm">{t(`features.${key}.body`)}</p>
+            <p className="text-muted-foreground text-sm">{t(`features.${key}.body`)}</p>
           </Card>
         ))}
       </section>

@@ -15,6 +15,43 @@ export interface TransactionHistoryItem {
 
 const API_URL = env.NEXT_PUBLIC_API_URL;
 
+const USE_MOCK_API =
+  process.env.NEXT_PUBLIC_USE_MOCK_API === 'true' || process.env.LHCI_MOCK_API === 'true';
+
+const MOCK_PROPERTIES: Property[] = [
+  {
+    id: '1',
+    name: 'Sunset Apartments',
+    city: 'Lisbon',
+    type: 'apartment',
+    yieldBps: 650,
+    tokenContractId: 'mock-token-1',
+  } as Property,
+  {
+    id: '2',
+    name: 'Harbor Offices',
+    city: 'Porto',
+    type: 'office',
+    yieldBps: 720,
+    tokenContractId: 'mock-token-2',
+  } as Property,
+];
+
+function mockListProperties(options: ListPropertiesOptions): Paginated<Property> {
+  const { page = 1, city, type, minYieldBps } = options;
+  const filtered = MOCK_PROPERTIES.filter((p) => {
+    if (city !== undefined && city !== '' && p.city !== city) return false;
+    if (type !== undefined && type !== '' && p.type !== type) return false;
+    if (minYieldBps !== undefined && p.yieldBps < minYieldBps) return false;
+    return true;
+  });
+  return { items: filtered, page, total: filtered.length, pageSize: filtered.length };
+}
+
+function mockGetProperty(id: string): Property | undefined {
+  return MOCK_PROPERTIES.find((p) => p.id === id);
+}
+
 export type Result<T> = { ok: true; data: T } | { ok: false; message: string };
 
 export interface ListPropertiesOptions {
@@ -44,6 +81,9 @@ export function listProperties(
   options: ListPropertiesOptions = {},
 ): Promise<Result<Paginated<Property>>> {
   const { page = 1, city, type, minYieldBps } = options;
+  if (USE_MOCK_API) {
+    return Promise.resolve({ ok: true, data: mockListProperties(options) });
+  }
   const params = new URLSearchParams();
   params.set('page', String(page));
   if (city !== undefined && city !== '') params.set('city', city);
@@ -53,6 +93,14 @@ export function listProperties(
 }
 
 export function getProperty(id: string): Promise<Result<Property>> {
+  if (USE_MOCK_API) {
+    const property = mockGetProperty(id);
+    return Promise.resolve(
+      property !== undefined
+        ? { ok: true, data: property }
+        : { ok: false, message: 'Property not found' },
+    );
+  }
   return request(`/properties/${encodeURIComponent(id)}`);
 }
 

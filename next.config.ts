@@ -37,7 +37,11 @@ function getRemotePatterns(): NonNullable<NonNullable<NextConfig['images']>['rem
 
 const nextConfig: NextConfig = {
   images: {
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: getRemotePatterns(),
+  },
+  env: {
+    NEXT_PUBLIC_USE_MOCK_API: process.env.NEXT_PUBLIC_USE_MOCK_API ?? '',
   },
 };
 

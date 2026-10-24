@@ -89,13 +89,11 @@ export default function PropertiesPage() {
     [router, searchParams],
   );
 
-  const handleCitySubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleCitySubmit = () => {
     updateParams({ city: cityInput.trim() || undefined });
   };
 
-  const handleMinYieldSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleMinYieldSubmit = () => {
     updateParams({ minYield: minYieldInput.trim() || undefined });
   };
 
@@ -135,7 +133,7 @@ export default function PropertiesPage() {
           <label htmlFor="filter-city" className="text-sm font-medium">
             City
           </label>
-          <form onSubmit={handleCitySubmit} className="flex gap-2">
+          <div className="flex gap-2">
             <input
               id="filter-city"
               type="text"
@@ -144,10 +142,10 @@ export default function PropertiesPage() {
               placeholder="Any city"
               className="border-border bg-surface text-foreground focus:ring-primary w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2"
             />
-            <Button type="submit" variant="secondary">
+            <Button type="button" variant="secondary" onClick={handleCitySubmit}>
               Apply
             </Button>
-          </form>
+          </div>
         </div>
 
         <div className="flex flex-col gap-1">
@@ -173,7 +171,7 @@ export default function PropertiesPage() {
           <label htmlFor="filter-min-yield" className="text-sm font-medium">
             Minimum yield (%)
           </label>
-          <form onSubmit={handleMinYieldSubmit} className="flex gap-2">
+          <div className="flex gap-2">
             <input
               id="filter-min-yield"
               type="number"
@@ -185,21 +183,29 @@ export default function PropertiesPage() {
               placeholder="Any"
               className="border-border bg-surface text-foreground focus:ring-primary w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2"
             />
-            <Button type="submit" variant="secondary">
+            <Button type="button" variant="secondary" onClick={handleMinYieldSubmit}>
               Apply
             </Button>
-          </form>
+          </div>
         </div>
       </form>
 
       {loading ? (
-        <p className="text-muted text-sm">Loading properties…</p>
+        <p className="text-muted text-sm" role="status" aria-live="polite">
+          Loading properties…
+        </p>
       ) : !result ? (
-        <p className="text-muted text-sm">{t('empty')}</p>
+        <p className="text-muted text-sm" role="status">
+          {t('empty')}
+        </p>
       ) : !result.ok ? (
-        <p className="text-danger text-sm">{t('apiError', { message: result.message })}</p>
+        <p className="text-danger text-sm" role="alert">
+          {t('apiError', { message: result.message })}
+        </p>
       ) : result.data.items.length === 0 ? (
-        <p className="text-muted text-sm">{t('empty')}</p>
+        <p className="text-muted text-sm" role="status">
+          {t('empty')}
+        </p>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {result.data.items.map((property) => (

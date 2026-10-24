@@ -64,7 +64,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
     [t('expectedYield'), formatBps(p.expectedYieldBps)],
   ];
 
-  const supply = p.tokenContractId ? await getTokenSupply(p.tokenContractId) : null;
+  const supply = p.tokenContractId ? await getTokenSupply(p.tokenContractId).catch(() => null) : null;
 
   const images = p.imageUrl ? [p.imageUrl] : [];
 
